@@ -250,7 +250,9 @@ ros2 run rtabmap_slam rtabmap --ros-args \
   -r rgb/camera_info:=/ugv/camera/camera_info
 ~~~
 
-All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capability.
+All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capability. There are still some issues with the SLAM that I need to ensure. 
+
+
 
 ## Troubleshooting
 
@@ -266,5 +268,11 @@ All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capabili
   colcon build --packages-select camera_bot --symlink-install
   ~~~
 - No subscribers on `commands`: ensure `/ugv` namespace is used and controllers are active.
+
+## To-be-fixed
+
+- I planned to Dockerize this, but haven't got the time. This is top priority to ensure this robot can be reproducible
+- Next then is to fix the SLAM capability.
+- Fix the mesh so the steering bot will look a bit more proper than a slab with wheels.
 
 
