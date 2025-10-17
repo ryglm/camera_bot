@@ -144,7 +144,7 @@ ros2 control list_hardware_interfaces -c /ugv/controller_manager | sed -n '/comm
 
 ---
 
-## 7) Manual command test (optional)
+## 7) Manual command test 
 
 ~~~bash
 # steering angles (radians) for both front knuckles
@@ -155,6 +155,45 @@ ros2 topic pub -1 /ugv/rear_wheels_controller/commands std_msgs/msg/Float64Multi
 ~~~
 
 ---
+
+## Activate manual controller. This utilizes teleop.cpp
+1. Source the shell 
+~~~bash
+source /home/coldburn/install/setup.bash
+~~~
+
+2. Verify existence of camera_bot 
+~~~bash
+ros2 pkg list | grep camera_bot
+ros2 pkg prefix camera_bot
+~~~
+
+3. Run 
+~~~bash
+ros2 run camera_bot teleop \
+  --ros-args \
+  -p steering_topic:=/ugv/steering_controller/commands \
+  -p rear_topic:=/ugv/rear_wheels_controller/commands
+~~~
+
+---------------
+
+## Run Camera
+
+First, run the bridge for clock to enable use_sim_time
+~~~bash
+ros2 run ros_gz_bridge parameter_bridge /clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock
+~~~
+
+Then run the bridge for camera
+~~~bash
+ros2 run ros_gz_bridge parameter_bridge \
+  /ugv/camera/image@sensor_msgs/msg/Image@gz.msgs.Image \
+  /ugv/camera/depth_image@sensor_msgs/msg/Image@gz.msgs.Image \
+  /ugv/camera/camera_info@sensor_msgs/msg/CameraInfo@gz.msgs.CameraInfo \
+  /clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock
+~~~
+
 
 ## Troubleshooting
 
