@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<robot name="steer" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Declare arguments for configs and ros2_control -->
+  <xacro:arg name="use_ros2_control" default="true"/>
+  <xacro:arg name="params_file" default="$(find steering_wheel)/config/controllers.yaml"/>
+
+  <!-- Properties -->
+  <xacro:property name="mesh_dir"      value="package://steering_wheel/description/assets"/>
+  <xacro:property name="ros_namespace" value="ugv"/>
+  <xacro:property name="rsp_node"      value="/ugv/robot_state_publisher"/>
+
+  <!-- Include files -->
+  <xacro:include filename="macros/materials.xacro"/>
+  <xacro:include filename="macros/mesh_link.xacro"/>
+  <xacro:include filename="ros2_control.xacro"/>
+
+
+  <!-- Links  -->
+  <xacro:mesh_link name="body" mass="3.0"
+      ixx="0.02" iyy="0.02" izz="0.03" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/body.stl"
+      vis_xyz="0.00637695 0.0201042 -0.0232289"
+      vis_rpy="0 0 0" mat="body_material"/>
+
+  <xacro:mesh_link name="knuckles" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/knuckles.stl"
+      vis_xyz="1.38778e-17 -1.38778e-16 0.02"
+      vis_rpy="3.14159 0 0" mat="knuckles_material"/>
+
+  <xacro:mesh_link name="wheel" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/wheel.stl"
+      vis_xyz="0 0 0" vis_rpy="1.4 0 1.7" mat="wheel_material"/>
+
+  <xacro:mesh_link name="knuckles_2" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/knuckles.stl"
+      vis_xyz="1.38778e-17 -1.38778e-17 0"
+      vis_rpy="0 0 3.14159" mat="knuckles_2_material"/>
+
+  <xacro:mesh_link name="wheel_2" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/wheel.stl"
+      vis_xyz="0 0 0" vis_rpy="1.7 0 1.7" mat="wheel_2_material"/>
+
+  <xacro:mesh_link name="wheel_3" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/wheel.stl"
+      vis_xyz="0 1.38778e-17 -0.02"
+      vis_rpy="-1.5708 -9.93006e-17 -0.625192" mat="wheel_3_material"/>
+
+  <xacro:mesh_link name="wheel_4" mass="2.0"
+      ixx="0.02" iyy="0.02" izz="0.02" ixy="0" ixz="0" iyz="0"
+      mesh_file="${mesh_dir}/wheel.stl"
+      vis_xyz="0 -1.38778e-17 0.02"
+      vis_rpy="1.5708 -4.79097e-17 -0.713125" mat="wheel_4_material"/>
+
+  <!-- Joints  -->
+  <joint name="spin_fl" type="continuous">
+    <origin xyz="0.0249198 -0.00741653 0.01" rpy="-1.5708 0 -1.86006"/>
+    <parent link="knuckles"/><child link="wheel"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <joint name="steer_fl" type="revolute">
+    <origin xyz="0.101322 -0.0720623 -0.0512289" rpy="0 0 0"/>
+    <parent link="body"/><child link="knuckles"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <joint name="spin_fr" type="continuous">
+    <origin xyz="-0.025623 0.00441163 0.01" rpy="1.5708 0 -1.7413"/>
+    <parent link="knuckles_2"/><child link="wheel_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <joint name="steer_fr" type="revolute">
+    <origin xyz="-0.0686778 -0.0720623 -0.0512289" rpy="0 0 0"/>
+    <parent link="body"/><child link="knuckles_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <joint name="spin_rl" type="continuous">
+    <origin xyz="0.101322 0.0679377 -0.0512289" rpy="0 -1.5708 0"/>
+    <parent link="body"/><child link="wheel_3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <joint name="spin_rr" type="continuous">
+    <origin xyz="-0.0686778 0.0679377 -0.0512289" rpy="0 -1.5708 0"/>
+    <parent link="body"/><child link="wheel_4"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+
+  <!-- Camera  -->
+  <link name="camera_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.04 0.04 0.02"/></geometry>
+    </visual>
+  </link>
+
+  <joint name="camera_mount" type="fixed">
+    <parent link="body"/><child link="camera_link"/>
+    <origin xyz="0 0.0 0.12" rpy="0 0 -1.5708"/>
+  </joint>
+
+  <link name="camera_link_optical"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/><child link="camera_link_optical"/>
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+  <!-- Gazebo sensors on camera_link -->
+  <gazebo reference="camera_link">
+    <sensor name="rgb_camera" type="camera">
+      <update_rate>30</update_rate><always_on>true</always_on>
+      <topic>/ugv/camera/image</topic>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+        <clip><near>0.05</near><far>50.0</far></clip>
+      </camera>
+    </sensor>
+    <sensor name="depth_camera" type="depth_camera">
+      <update_rate>30</update_rate><always_on>true</always_on>
+      <topic>/ugv/camera/depth_image</topic>
+      <camera>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image><width>640</width><height>480</height></image>
+        <clip><near>0.20</near><far>20.0</far></clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- ros2_control xacro call -->
+  <xacro:if value="$(arg use_ros2_control)">
+    <xacro:steer_ros2_control
+      name="ugv_steer_system"
+      robot_param="robot_description"
+      robot_param_node="${rsp_node}"
+      ros_namespace="${ros_namespace}"
+      update_rate="50"
+      params_file="$(find steering_wheel)/config/controllers.yaml"/>
+  </xacro:if>
+
+
+
+</robot>

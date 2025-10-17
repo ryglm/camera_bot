@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot name="ros2_control_block" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Single macro: modern ros2_control joint syntax + gz sim plugin -->
+  <xacro:macro name="steer_ros2_control" params="
+    name
+    robot_param
+    robot_param_node
+    ros_namespace
+    update_rate
+    params_file">
+
+    <!-- ros2_control hardware + interfaces -->
+    <ros2_control name="${name}" type="system">
+      <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        <param name="update_rate">${update_rate}</param>
+      </hardware>
+
+      <!-- steering: position command -->
+<joint name="steer_fl">
+  <command_interface name="position"/>
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+<joint name="steer_fr">
+  <command_interface name="position"/>
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+<joint name="spin_rl">
+  <command_interface name="velocity"/>
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+<joint name="spin_rr">
+  <command_interface name="velocity"/>
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+<joint name="spin_fl">
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+<joint name="spin_fr">
+  <state_interface   name="position"/>
+  <state_interface   name="velocity"/>
+</joint>
+    </ros2_control>
+
+    <!-- Gazebo Sim ros2_control system plugin -->
+    <gazebo>
+      <plugin filename="libgz_ros2_control-system.so"
+              name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>${params_file}</parameters>
+        <controller_manager_prefix_node_name>controller_manager</controller_manager_prefix_node_name>
+        <robot_param>${robot_param}</robot_param>
+        <robot_param_node>${robot_param_node}</robot_param_node>
+        <ros>
+          <namespace>${ros_namespace}</namespace>
+        </ros>
+        <update_rate>${update_rate}</update_rate>
+      </plugin>
+    </gazebo>
+
+  </xacro:macro>
+</robot>

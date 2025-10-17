@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot name="materials" xmlns:xacro="http://ros.org/wiki/xacro">
+  <material name="body_material">
+    <color rgba="0.615686 0.811765 0.929412 1"/>
+  </material>
+
+  <material name="knuckles_material">
+    <color rgba="0.231373 0.380392 0.705882 1"/>
+  </material>
+
+  <material name="wheel_material">
+    <color rgba="0.647059 0.647059 0.647059 1"/>
+  </material>
+
+  <material name="knuckles_2_material">
+    <color rgba="0.231373 0.380392 0.705882 1"/>
+  </material>
+
+  <material name="wheel_2_material">
+    <color rgba="0.647059 0.647059 0.647059 1"/>
+  </material>
+
+  <material name="wheel_3_material">
+    <color rgba="0.647059 0.647059 0.647059 1"/>
+  </material>
+
+  <material name="wheel_4_material">
+    <color rgba="0.647059 0.647059 0.647059 1"/>
+  </material>
+</robot>
+

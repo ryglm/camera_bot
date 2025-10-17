@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot name="mesh_link_macros" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!--
+    Creates a link with inertial + shared mesh for visual/collision.
+    Required args:
+      name, mass, ixx iyy izz ixy ixz iyz, mesh_file, vis_xyz, vis_rpy, mat
+  -->
+  <xacro:macro name="mesh_link" params="
+      name
+      mass
+      ixx iyy izz ixy ixz iyz
+      mesh_file
+      vis_xyz vis_rpy
+      mat">
+
+    <link name="${name}">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+      </inertial>
+
+      <visual>
+        <origin xyz="${vis_xyz}" rpy="${vis_rpy}"/>
+        <geometry>
+          <mesh filename="${mesh_file}"/>
+        </geometry>
+        <material name="${mat}"/>
+      </visual>
+
+      <collision>
+        <origin xyz="${vis_xyz}" rpy="${vis_rpy}"/>
+        <geometry>
+          <mesh filename="${mesh_file}"/>
+        </geometry>
+      </collision>
+    </link>
+
+  </xacro:macro>
+
+</robot>
+
