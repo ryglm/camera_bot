@@ -14,6 +14,10 @@ Implementation of a camera-mounted steerable-wheel robot.
 
 ---
 
+I designed the Xacro myself. I made the robot into a front-steered robot to avoid looking the same as the usual two-wheeled robot. The flaws I can see is that I'd need more time to adjust the meshes manually. Perhaps there are some ways to do it automatically.
+
+---
+
 ## 1) Build
 
 ~~~bash
@@ -194,6 +198,59 @@ ros2 run ros_gz_bridge parameter_bridge \
   /clock@rosgraph_msgs/msg/Clock@gz.msgs.Clock
 ~~~
 
+================================================
+These commands run the Visual Odometry and SLAM
+================================================
+In two separate terminals, run tf2 publisher:
+~~~bash
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 body ugv/body/rgb_camera
+
+ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 body ugv/body/depth_camera
+~~~
+
+run rgbd_odometry for visual odometry:
+~~~bash
+ros2 run rtabmap_odom rgbd_odometry --ros-args \
+  -p use_sim_time:=true \
+  -p frame_id:=body \
+  -p approx_sync:=true \
+  -p qos_image:=2 -p qos_camera_info:=2 \
+  -p wait_for_transform:=0.2 \
+  -r rgb/image:=/ugv/camera/image \
+  -r depth/image:=/ugv/camera/depth_image \
+  -r rgb/camera_info:=/ugv/camera/camera_info
+~~~
+
+For the RTAB-Map, parse this YAML file first to avoid data type mismatch:
+~~~bash
+cat > /tmp/rtabmap.yaml <<'YAML'
+/rtabmap:
+  ros__parameters:
+    use_sim_time: true
+    frame_id: "body"
+    odom_frame_id: "odom"
+    map_frame_id: "map"
+    subscribe_depth: true
+    approx_sync: true
+    qos_image: 2
+    qos_camera_info: 2
+    RGBD/CreateOccupancyGrid: "true"
+    Grid/FromDepth: "true"
+    Grid/RangeMax: "8.0"
+    Grid/CellSize: "0.05"
+YAML
+~~~
+
+then run
+~~~bash
+ros2 run rtabmap_slam rtabmap --ros-args \
+  --params-file /tmp/rtabmap_3d.yaml \
+  -r rgb/image:=/ugv/camera/image \
+  -r depth/image:=/ugv/camera/depth_image \
+  -r rgb/camera_info:=/ugv/camera/camera_info
+~~~
+
+All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capability.
 
 ## Troubleshooting
 
