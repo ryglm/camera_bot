@@ -163,7 +163,7 @@ ros2 topic pub -1 /ugv/rear_wheels_controller/commands std_msgs/msg/Float64Multi
 ## Activate manual controller. This utilizes teleop.cpp
 1. Source the shell 
 ~~~bash
-source install/setup.bash
+. install/setup.bash
 ~~~
 
 2. Verify existence of camera_bot 
@@ -267,7 +267,7 @@ sudo DOCKER_BUILDKIT=1 docker build --network=host --no-cache -t camera_bot:jazz
 - Package not visible:
   ~~~bash
   source /opt/ros/$ROS_DISTRO/setup.bash
-  source install/setup.bash
+  . install/setup.bash
   ros2 pkg list | grep camera_bot
   ~~~
 - Cache/source mismatch errors: clean the workspace root
