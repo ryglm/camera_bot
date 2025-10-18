@@ -257,7 +257,7 @@ UPDATE: Docker now available
 run 
 
 ~~~
-docker compose build
+sudo DOCKER_BUILDKIT=1 docker build --network=host --no-cache -t camera_bot:jazzy .
 ~~~
 
 
