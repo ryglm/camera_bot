@@ -163,7 +163,7 @@ ros2 topic pub -1 /ugv/rear_wheels_controller/commands std_msgs/msg/Float64Multi
 ## Activate manual controller. This utilizes teleop.cpp
 1. Source the shell 
 ~~~bash
-source /home/coldburn/install/setup.bash
+source install/setup.bash
 ~~~
 
 2. Verify existence of camera_bot 
