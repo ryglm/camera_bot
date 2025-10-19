@@ -250,7 +250,15 @@ ros2 run rtabmap_slam rtabmap --ros-args \
   -r rgb/camera_info:=/ugv/camera/camera_info
 ~~~
 
-All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capability. There are still some issues with the SLAM that I need to ensure. 
+All of these can now be checked in Rviz2, check PointCloud2 to see SLAM capability. There are still some issues with the SLAM that I need to ensure.
+
+UPDATE: Docker now available
+
+run 
+
+~~~
+sudo DOCKER_BUILDKIT=1 docker build --network=host --no-cache -t camera_bot:jazzy .
+~~~
 
 
 
